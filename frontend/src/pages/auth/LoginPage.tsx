@@ -1,11 +1,17 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,58 +39,72 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Sign in to your account</CardTitle>
+          <CardDescription className="text-center">Enter your email and password to access your account</CardDescription>
+        </CardHeader>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-          
-          <div className="space-y-4">
-            <div>
-              <input
-                type="email"
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 name="email"
+                type="email"
+                placeholder="m@example.com"
                 required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
             
-            <div>
-              <input
-                type="password"
-                name="password"
-                required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4 text-gray-500" />
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
+          </CardContent>
 
-          <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Sign in
-          </button>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button className="w-full bg-[#655eed] hover:bg-[#4b44b3]" type="submit">
+              Sign in
+            </Button>
+            <div className="text-sm text-center text-gray-500">
+              Don't have an account?{' '}
+              <a href="/signup" className="text-[#655eed] hover:underline ml-1">
+                Sign up
+              </a>
+            </div>
+          </CardFooter>
         </form>
-
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Sign up
-            </a>
-          </p>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 }
